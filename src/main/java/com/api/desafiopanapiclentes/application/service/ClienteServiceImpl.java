@@ -5,6 +5,8 @@ import com.api.desafiopanapiclentes.application.port.out.ClienteRepository;
 import com.api.desafiopanapiclentes.domain.dto.ClienteDTO;
 import com.api.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
+import com.api.desafiopanapiclentes.domain.factory.EnderecoFactory;
+import com.api.desafiopanapiclentes.domain.mapper.ClienteMapper;
 import com.api.desafiopanapiclentes.domain.model.entity.Cliente;
 import com.api.desafiopanapiclentes.domain.model.entity.Endereco;
 import com.api.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ClienteMapper clienteMapper;
+    private final EnderecoFactory enderecoFactory;
 
     @Override
     @Transactional(readOnly = true)
@@ -26,7 +30,7 @@ public class ClienteServiceImpl implements ClienteService {
         log.debug("Buscando cliente pelo CPF: {}", cpf);
 
         return clienteRepository.findByCpf(cpf)
-                .map(cliente -> ApiResponseWrapper.success(mapToClienteDTO(cliente)))
+                .map(cliente -> ApiResponseWrapper.success(clienteMapper.toClienteDTO(cliente)))
                 .orElseGet(() -> {
                     log.error("Cliente não encontrado com CPF: {}", cpf);
                     return ApiResponseWrapper.error("Cliente", "CPF", cpf);
@@ -40,22 +44,14 @@ public class ClienteServiceImpl implements ClienteService {
 
         return clienteRepository.findByCpf(cpf)
                 .map(cliente -> {
-                    Endereco endereco = Endereco.builder()
-                            .cep(enderecoRequest.getCep())
-                            .logradouro(enderecoRequest.getLogradouro())
-                            .numero(enderecoRequest.getNumero())
-                            .complemento(enderecoRequest.getComplemento())
-                            .bairro(enderecoRequest.getBairro())
-                            .cidade(enderecoRequest.getCidade())
-                            .estado(enderecoRequest.getEstado())
-                            .build();
+                    Endereco endereco = enderecoFactory.createFromRequest(enderecoRequest);
 
                     cliente.setEndereco(endereco);
 
                     Cliente clienteAtualizado = clienteRepository.save(cliente);
                     log.info("Endereço do cliente atualizado com sucesso. CPF: {}", cpf);
 
-                    return ApiResponseWrapper.success(mapToClienteDTO(clienteAtualizado));
+                    return ApiResponseWrapper.success(clienteMapper.toClienteDTO(clienteAtualizado));
                 })
                 .orElseGet(() -> {
                     log.error("Cliente não encontrado com CPF: {}", cpf);
@@ -63,27 +59,4 @@ public class ClienteServiceImpl implements ClienteService {
                 });
     }
 
-    private ClienteDTO mapToClienteDTO(Cliente cliente) {
-        EnderecoDTO enderecoDTO = null;
-
-        if (cliente.getEndereco() != null) {
-            enderecoDTO = EnderecoDTO.builder()
-                    .cep(cliente.getEndereco().getCep())
-                    .logradouro(cliente.getEndereco().getLogradouro())
-                    .numero(cliente.getEndereco().getNumero())
-                    .complemento(cliente.getEndereco().getComplemento())
-                    .bairro(cliente.getEndereco().getBairro())
-                    .cidade(cliente.getEndereco().getCidade())
-                    .estado(cliente.getEndereco().getEstado())
-                    .build();
-        }
-
-        return ClienteDTO.builder()
-                .cpf(cliente.getCpf())
-                .nome(cliente.getNome())
-                .email(cliente.getEmail())
-                .telefone(cliente.getTelefone())
-                .endereco(enderecoDTO)
-                .build();
-    }
 }
