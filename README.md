@@ -24,7 +24,7 @@ O projeto segue os princípios da Arquitetura Hexagonal (Ports and Adapters), se
 
 #### 1. Consultar Cliente por CPF
 
-![diagrama-consultar.png](diagrama-consultar.png)sequenceDiagram
+![diagrama-consultar.png](diagrama-consultar.png)
 
 
 #### 2. Atualizar Endereço de Cliente
