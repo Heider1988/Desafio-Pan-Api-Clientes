@@ -89,6 +89,19 @@ Para executar os testes unitários, utilize o comando:
 mvn test
 ```
 
+## Integração Contínua
+
+Este projeto utiliza GitHub Actions para automação de CI/CD. O workflow é executado automaticamente em cada push para a branch `main` e em pull requests direcionadas à `main`.
+
+O pipeline de CI inclui:
+
+1. **Build e verificação**: Compila o código e executa todos os testes
+2. **Verificação de vulnerabilidades**: Utiliza OWASP Dependency-Check para identificar vulnerabilidades conhecidas nas dependências
+3. **Verificação de dependências desatualizadas**: Identifica dependências que possuem versões mais recentes disponíveis
+4. **Armazenamento de artefatos**: O arquivo JAR gerado é armazenado como artefato da execução do workflow
+
+Para visualizar os resultados das execuções do workflow, acesse a aba "Actions" no repositório GitHub.
+
 ## Documentação da API
 
 A documentação completa da API está disponível através do Swagger UI:
