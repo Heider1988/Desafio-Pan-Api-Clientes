@@ -1,7 +1,7 @@
 package com.api.rabbitmq.desafiopanapiclentes.infrastructure.config;
 
-import com.api.rabbitmq.desafiopanapiclentes.domain.model.Cliente;
-import com.api.rabbitmq.desafiopanapiclentes.domain.model.Endereco;
+import com.api.rabbitmq.desafiopanapiclentes.domain.model.entity.Cliente;
+import com.api.rabbitmq.desafiopanapiclentes.domain.model.entity.Endereco;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.repository.ClienteJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,8 @@ public class DataLoader {
     public CommandLineRunner loadData() {
         return args -> {
             log.info("Carregando dados iniciais...");
-            
-            // Cliente 1
+
+
             Cliente cliente1 = Cliente.builder()
                     .cpf("12339949123")
                     .nome("Heider Oliveira")
@@ -37,8 +37,7 @@ public class DataLoader {
                             .estado("ES")
                             .build())
                     .build();
-            
-            // Cliente 2
+
             Cliente cliente2 = Cliente.builder()
                     .cpf("98765432109")
                     .nome("Maria Oliveira")
@@ -55,7 +54,7 @@ public class DataLoader {
                             .build())
                     .build();
             
-            // Cliente 3
+
             Cliente cliente3 = Cliente.builder()
                     .cpf("45678912301")
                     .nome("Carlos Pereira")

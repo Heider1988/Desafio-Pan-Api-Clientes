@@ -23,7 +23,9 @@ public interface ClienteControllerDocs {
     @Operation(summary = "Consultar cliente por CPF", description = "Retorna os dados cadastrais do cliente com o CPF informado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponseWrapper.class))),
+                    content = @Content(mediaType = "application/json", 
+                            schema = @Schema(implementation = ApiResponseWrapper.class, 
+                                    subTypes = {ClienteDTO.class}))),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", 
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -34,7 +36,9 @@ public interface ClienteControllerDocs {
     @Operation(summary = "Atualizar endereço do cliente", description = "Atualiza o endereço do cliente com o CPF informado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço atualizado com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponseWrapper.class))),
+                    content = @Content(mediaType = "application/json", 
+                            schema = @Schema(implementation = ApiResponseWrapper.class, 
+                                    subTypes = {ClienteDTO.class}))),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado", 
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos", 

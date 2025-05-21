@@ -19,7 +19,9 @@ public interface EnderecoControllerDocs {
     @Operation(summary = "Consultar endereço por CEP", description = "Retorna o endereço correspondente ao CEP informado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponseWrapper.class))),
+                    content = @Content(mediaType = "application/json", 
+                            schema = @Schema(implementation = ApiResponseWrapper.class, 
+                                    subTypes = {EnderecoDTO.class}))),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado", 
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "CEP inválido", 

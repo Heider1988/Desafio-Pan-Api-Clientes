@@ -24,7 +24,9 @@ public interface LocalidadeControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de estados",
                     content = @Content(mediaType = "application/json", 
-                            schema = @Schema(implementation = ApiResponseWrapper.class)))
+                            schema = @Schema(implementation = ApiResponseWrapper.class,
+                                    subTypes = {List.class}),
+                            array = @ArraySchema(schema = @Schema(implementation = Estado.class))))
     })
     ResponseEntity<ApiResponseWrapper<List<Estado>>> listarEstados();
 
@@ -32,7 +34,9 @@ public interface LocalidadeControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de municípios",
                     content = @Content(mediaType = "application/json", 
-                            schema = @Schema(implementation = ApiResponseWrapper.class))),
+                            schema = @Schema(implementation = ApiResponseWrapper.class,
+                                    subTypes = {List.class}),
+                            array = @ArraySchema(schema = @Schema(implementation = Municipio.class)))),
             @ApiResponse(responseCode = "404", description = "Estado não encontrado", 
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })

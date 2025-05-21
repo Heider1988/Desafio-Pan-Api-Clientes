@@ -1,4 +1,4 @@
-package com.api.rabbitmq.desafiopanapiclentes.domain.model;
+package com.api.rabbitmq.desafiopanapiclentes.domain.model.entity;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Column;

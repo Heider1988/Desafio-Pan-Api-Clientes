@@ -5,9 +5,8 @@ import com.api.rabbitmq.desafiopanapiclentes.application.port.out.ClienteReposit
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.ClienteDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
-import com.api.rabbitmq.desafiopanapiclentes.domain.model.Cliente;
-import com.api.rabbitmq.desafiopanapiclentes.domain.model.Endereco;
-import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
+import com.api.rabbitmq.desafiopanapiclentes.domain.model.entity.Cliente;
+import com.api.rabbitmq.desafiopanapiclentes.domain.model.entity.Endereco;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

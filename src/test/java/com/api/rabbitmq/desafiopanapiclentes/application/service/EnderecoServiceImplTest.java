@@ -2,8 +2,6 @@ package com.api.rabbitmq.desafiopanapiclentes.application.service;
 
 import com.api.rabbitmq.desafiopanapiclentes.application.port.out.ViaCepClient;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
-import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
-import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ValidationException;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

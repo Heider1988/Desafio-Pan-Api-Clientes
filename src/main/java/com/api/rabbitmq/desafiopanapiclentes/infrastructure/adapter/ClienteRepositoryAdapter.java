@@ -1,7 +1,7 @@
 package com.api.rabbitmq.desafiopanapiclentes.infrastructure.adapter;
 
 import com.api.rabbitmq.desafiopanapiclentes.application.port.out.ClienteRepository;
-import com.api.rabbitmq.desafiopanapiclentes.domain.model.Cliente;
+import com.api.rabbitmq.desafiopanapiclentes.domain.model.entity.Cliente;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.repository.ClienteJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

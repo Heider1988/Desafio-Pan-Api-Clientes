@@ -1,4 +1,4 @@
-package com.api.rabbitmq.desafiopanapiclentes.domain.model;
+package com.api.rabbitmq.desafiopanapiclentes.domain.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
