@@ -20,6 +20,29 @@ O projeto segue os princípios da Arquitetura Hexagonal (Ports and Adapters), se
 - **Application**: Contém os casos de uso e portas (interfaces) da aplicação
 - **Infrastructure**: Contém os adaptadores para interagir com o mundo externo (banco de dados, APIs externas, etc.)
 
+### Diagramas de Sequência
+
+#### 1. Consultar Cliente por CPF
+
+![diagrama-consultar.png](diagrama-consultar.png)sequenceDiagram
+
+
+#### 2. Atualizar Endereço de Cliente
+
+![diagrama-put-clientes.png](diagrama-put-clientes.png)
+
+#### 3. Consultar Endereço por CEP
+
+![diagrama-consultar-endereco-cep.png](diagrama-consultar-endereco-cep.png)
+
+#### 4. Listar Estados
+
+![diagrama-listar-estados.png](diagrama-listar-estados.png)
+
+#### 5. Listar Municípios por Estado
+
+![diagrama-listar-municipios-estados.png](diagrama-listar-municipios-estados.png)
+
 ## Funcionalidades
 
 A API oferece as seguintes funcionalidades:
