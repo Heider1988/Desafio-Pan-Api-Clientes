@@ -1,4 +1,4 @@
-package com.api.rabbitmq.desafiopanapiclentes;
+package com.api.desafiopanapiclentes;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

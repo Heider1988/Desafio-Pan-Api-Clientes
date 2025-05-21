@@ -1,4 +1,4 @@
-package com.api.rabbitmq.desafiopanapiclentes;
+package com.api.desafiopanapiclentes;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
