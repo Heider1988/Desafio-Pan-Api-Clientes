@@ -8,11 +8,11 @@
         <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.api.rabbitmq</groupId>
+    <groupId>com.api</groupId>
     <artifactId>Desafio-Pan-Api-Clientes</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Desafio-Pan-Api-Clentes</name>
-    <description>Desafio-Pan-Api-Clentes</description>
+    <name>Desafio-Pan-Api-Clientes</name>
+    <description>Desafio-Pan-Api-Clientes</description>
     <url/>
     <licenses>
         <license/>
@@ -94,6 +94,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>com.api.desafiopanapiclentes.DesafioPanApiClentesApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
