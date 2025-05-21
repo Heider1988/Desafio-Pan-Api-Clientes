@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,9 +29,8 @@ public class MunicipioServiceImpl implements MunicipioService {
             throw new ResourceNotFoundException("Municípios", "Estado ID", estadoId);
         }
 
-        // Ordenar municípios por nome
         return municipios.stream()
                 .sorted(Comparator.comparing(Municipio::getNome))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

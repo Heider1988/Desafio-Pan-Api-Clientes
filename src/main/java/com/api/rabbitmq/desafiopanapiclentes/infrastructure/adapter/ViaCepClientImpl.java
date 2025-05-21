@@ -57,7 +57,6 @@ public class ViaCepClientImpl implements ViaCepClient {
                 .build();
     }
 
-    // Classe interna para mapear a resposta da API ViaCEP
     private static class ViaCepResponse {
         private String cep;
         private String logradouro;

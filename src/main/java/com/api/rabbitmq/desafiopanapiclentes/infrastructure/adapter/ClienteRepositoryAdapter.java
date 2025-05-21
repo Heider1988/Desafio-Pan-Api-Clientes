@@ -11,14 +11,14 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class ClienteRepositoryAdapter implements ClienteRepository {
-    
+
     private final ClienteJpaRepository clienteJpaRepository;
-    
+
     @Override
     public Optional<Cliente> findByCpf(String cpf) {
         return clienteJpaRepository.findByCpf(cpf);
     }
-    
+
     @Override
     public Cliente save(Cliente cliente) {
         return clienteJpaRepository.save(cliente);

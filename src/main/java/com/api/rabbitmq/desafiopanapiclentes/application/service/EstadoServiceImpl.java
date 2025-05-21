@@ -29,27 +29,23 @@ public class EstadoServiceImpl implements EstadoService {
             log.warn("Nenhum estado encontrado");
             return estados;
         }
-        
-        // Ordenação especial: São Paulo primeiro, Rio de Janeiro segundo, demais em ordem alfabética
+
         List<Estado> estadosOrdenados = new ArrayList<>();
-        
-        // Encontrar São Paulo
+
         estados.stream()
                 .filter(estado -> "SP".equals(estado.getSigla()))
                 .findFirst()
                 .ifPresent(estadosOrdenados::add);
-        
-        // Encontrar Rio de Janeiro
+
         estados.stream()
                 .filter(estado -> "RJ".equals(estado.getSigla()))
                 .findFirst()
                 .ifPresent(estadosOrdenados::add);
-        
-        // Adicionar os demais estados em ordem alfabética
+
         List<Estado> demaisEstados = estados.stream()
                 .filter(estado -> !("SP".equals(estado.getSigla()) || "RJ".equals(estado.getSigla())))
                 .sorted(Comparator.comparing(Estado::getNome))
-                .collect(Collectors.toList());
+                .toList();
         
         estadosOrdenados.addAll(demaisEstados);
         

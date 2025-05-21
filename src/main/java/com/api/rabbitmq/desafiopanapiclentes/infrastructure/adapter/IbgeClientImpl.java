@@ -88,7 +88,6 @@ public class IbgeClientImpl implements IbgeClient {
                 .toList();
     }
 
-    // Classes internas para mapear as respostas da API IBGE
     private static class IbgeEstadoResponse {
         private Long id;
         private String sigla;
