@@ -3,6 +3,7 @@ package com.api.rabbitmq.desafiopanapiclentes.infrastructure.controller;
 import com.api.rabbitmq.desafiopanapiclentes.application.port.in.ClienteService;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.ClienteDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
+import com.api.rabbitmq.desafiopanapiclentes.domain.dto.RequestWrapper;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.docs.ClienteControllerDocs;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import jakarta.validation.Valid;
@@ -31,10 +32,10 @@ public class ClienteController implements ClienteControllerDocs {
     @PutMapping("/{cpf}/endereco")
     public ResponseEntity<ApiResponseWrapper<ClienteDTO>> atualizarEnderecoCliente(
             @PathVariable String cpf,
-            @Valid @RequestBody EnderecoRequestDTO enderecoRequest) {
+            @Valid @RequestBody RequestWrapper<EnderecoRequestDTO> enderecoRequestWrapper) {
         log.info("Recebida requisição para atualizar endereço do cliente com CPF: {}", cpf);
 
-        ApiResponseWrapper<ClienteDTO> response = clienteService.atualizarEnderecoCliente(cpf, enderecoRequest);
+        ApiResponseWrapper<ClienteDTO> response = clienteService.atualizarEnderecoCliente(cpf, enderecoRequestWrapper.getDetail().getData());
         return ResponseEntity.ok(response);
     }
 }

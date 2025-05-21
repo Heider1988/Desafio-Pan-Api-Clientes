@@ -2,6 +2,7 @@ package com.api.rabbitmq.desafiopanapiclentes.infrastructure.docs;
 
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.ClienteDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
+import com.api.rabbitmq.desafiopanapiclentes.domain.dto.RequestWrapper;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ErrorResponse;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +43,6 @@ public interface ClienteControllerDocs {
     ResponseEntity<ApiResponseWrapper<ClienteDTO>> atualizarEnderecoCliente(
             @Parameter(description = "CPF do cliente", required = true)
             @PathVariable String cpf,
-            @Parameter(description = "Dados do novo endereço", required = true)
-            @Valid @RequestBody EnderecoRequestDTO enderecoRequest);
+            @Parameter(description = "Dados do novo endereço em formato aninhado", required = true)
+            @Valid @RequestBody RequestWrapper<EnderecoRequestDTO> enderecoRequestWrapper);
 }
