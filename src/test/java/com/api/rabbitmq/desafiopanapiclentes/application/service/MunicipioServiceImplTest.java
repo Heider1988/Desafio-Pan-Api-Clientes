@@ -3,6 +3,7 @@ package com.api.rabbitmq.desafiopanapiclentes.application.service;
 import com.api.rabbitmq.desafiopanapiclentes.application.port.out.IbgeClient;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Municipio;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,9 +43,14 @@ class MunicipioServiceImplTest {
     void listarMunicipiosPorEstado_QuandoExistemMunicipios_DeveRetornarListaOrdenada() {
         when(ibgeClient.buscarMunicipiosPorEstado(ESTADO_ID)).thenReturn(municipios);
 
-        List<Municipio> resultado = municipioService.listarMunicipiosPorEstado(ESTADO_ID);
+        ApiResponseWrapper<List<Municipio>> response = municipioService.listarMunicipiosPorEstado(ESTADO_ID);
 
-        assertNotNull(resultado);
+        assertNotNull(response);
+        assertNotNull(response.getDetail());
+        assertNotNull(response.getDetail().getData());
+        assertTrue(response.getErros().isEmpty());
+
+        List<Municipio> resultado = response.getDetail().getData();
         assertEquals(5, resultado.size());
 
         for (int i = 0; i < resultado.size() - 1; i++) {
@@ -55,33 +61,32 @@ class MunicipioServiceImplTest {
     }
 
     @Test
-    void listarMunicipiosPorEstado_QuandoListaVazia_DeveLancarExcecao() {
-
+    void listarMunicipiosPorEstado_QuandoListaVazia_DeveRetornarErro() {
         when(ibgeClient.buscarMunicipiosPorEstado(ESTADO_ID)).thenReturn(new ArrayList<>());
 
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> municipioService.listarMunicipiosPorEstado(ESTADO_ID)
-        );
+        ApiResponseWrapper<List<Municipio>> response = municipioService.listarMunicipiosPorEstado(ESTADO_ID);
 
-        assertTrue(exception.getMessage().contains("Municípios"));
-        assertTrue(exception.getMessage().contains(ESTADO_ID.toString()));
+        assertNotNull(response);
+        assertFalse(response.getErros().isEmpty());
+        assertTrue(response.getErros().get(0).contains("Municípios"));
+        assertTrue(response.getErros().get(0).contains(ESTADO_ID.toString()));
+        assertNull(response.getDetail().getData());
 
         verify(ibgeClient, times(1)).buscarMunicipiosPorEstado(ESTADO_ID);
     }
 
     @Test
-    void listarMunicipiosPorEstado_QuandoEstadoIdInvalido_DeveLancarExcecao() {
+    void listarMunicipiosPorEstado_QuandoEstadoIdInvalido_DeveRetornarErro() {
         Long estadoIdInvalido = 999L;
         when(ibgeClient.buscarMunicipiosPorEstado(estadoIdInvalido)).thenReturn(new ArrayList<>());
 
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> municipioService.listarMunicipiosPorEstado(estadoIdInvalido)
-        );
+        ApiResponseWrapper<List<Municipio>> response = municipioService.listarMunicipiosPorEstado(estadoIdInvalido);
 
-        assertTrue(exception.getMessage().contains("Municípios"));
-        assertTrue(exception.getMessage().contains(estadoIdInvalido.toString()));
+        assertNotNull(response);
+        assertFalse(response.getErros().isEmpty());
+        assertTrue(response.getErros().get(0).contains("Municípios"));
+        assertTrue(response.getErros().get(0).contains(estadoIdInvalido.toString()));
+        assertNull(response.getDetail().getData());
 
         verify(ibgeClient, times(1)).buscarMunicipiosPorEstado(estadoIdInvalido);
     }

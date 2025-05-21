@@ -6,6 +6,7 @@ import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Cliente;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Endereco;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,9 +54,14 @@ class ClienteServiceImplTest {
     void buscarClientePorCpf_QuandoClienteExiste_DeveRetornarClienteDTO() {
         when(clienteRepository.findByCpf(CPF)).thenReturn(Optional.of(cliente));
 
-        ClienteDTO resultado = clienteService.buscarClientePorCpf(CPF);
+        ApiResponseWrapper<ClienteDTO> response = clienteService.buscarClientePorCpf(CPF);
 
-        assertNotNull(resultado);
+        assertNotNull(response);
+        assertNotNull(response.getDetail());
+        assertNotNull(response.getDetail().getData());
+        assertTrue(response.getErros().isEmpty());
+
+        ClienteDTO resultado = response.getDetail().getData();
         assertEquals(CPF, resultado.getCpf());
         assertEquals("João da Silva", resultado.getNome());
         assertEquals("joao.silva@email.com", resultado.getEmail());
@@ -69,15 +75,15 @@ class ClienteServiceImplTest {
     }
 
     @Test
-    void buscarClientePorCpf_QuandoClienteNaoExiste_DeveLancarExcecao() {
+    void buscarClientePorCpf_QuandoClienteNaoExiste_DeveRetornarErro() {
         when(clienteRepository.findByCpf(CPF)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> clienteService.buscarClientePorCpf(CPF)
-        );
+        ApiResponseWrapper<ClienteDTO> response = clienteService.buscarClientePorCpf(CPF);
 
-        assertTrue(exception.getMessage().contains(CPF));
+        assertNotNull(response);
+        assertFalse(response.getErros().isEmpty());
+        assertTrue(response.getErros().get(0).contains(CPF));
+        assertNull(response.getDetail().getData());
 
         verify(clienteRepository, times(1)).findByCpf(CPF);
     }
@@ -97,9 +103,14 @@ class ClienteServiceImplTest {
                 .estado("SP")
                 .build();
 
-        ClienteDTO resultado = clienteService.atualizarEnderecoCliente(CPF, enderecoRequest);
+        ApiResponseWrapper<ClienteDTO> response = clienteService.atualizarEnderecoCliente(CPF, enderecoRequest);
 
-        assertNotNull(resultado);
+        assertNotNull(response);
+        assertNotNull(response.getDetail());
+        assertNotNull(response.getDetail().getData());
+        assertTrue(response.getErros().isEmpty());
+
+        ClienteDTO resultado = response.getDetail().getData();
         assertEquals(CPF, resultado.getCpf());
 
         verify(clienteRepository, times(1)).findByCpf(CPF);
@@ -107,10 +118,8 @@ class ClienteServiceImplTest {
     }
 
     @Test
-    void atualizarEnderecoCliente_QuandoClienteNaoExiste_DeveLancarExcecao() {
-
+    void atualizarEnderecoCliente_QuandoClienteNaoExiste_DeveRetornarErro() {
         when(clienteRepository.findByCpf(CPF)).thenReturn(Optional.empty());
-
 
         EnderecoRequestDTO enderecoRequest = EnderecoRequestDTO.builder()
                 .cep("04538133")
@@ -121,13 +130,12 @@ class ClienteServiceImplTest {
                 .estado("SP")
                 .build();
 
+        ApiResponseWrapper<ClienteDTO> response = clienteService.atualizarEnderecoCliente(CPF, enderecoRequest);
 
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> clienteService.atualizarEnderecoCliente(CPF, enderecoRequest)
-        );
-
-        assertTrue(exception.getMessage().contains(CPF));
+        assertNotNull(response);
+        assertFalse(response.getErros().isEmpty());
+        assertTrue(response.getErros().get(0).contains(CPF));
+        assertNull(response.getDetail().getData());
 
         verify(clienteRepository, times(1)).findByCpf(CPF);
         verify(clienteRepository, never()).save(any(Cliente.class));

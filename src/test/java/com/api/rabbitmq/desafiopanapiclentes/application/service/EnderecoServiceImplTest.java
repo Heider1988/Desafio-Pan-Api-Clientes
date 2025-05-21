@@ -4,6 +4,7 @@ import com.api.rabbitmq.desafiopanapiclentes.application.port.out.ViaCepClient;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ValidationException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,11 +49,14 @@ class EnderecoServiceImplTest {
 
         when(viaCepClient.buscarEnderecoPorCep(CEP_VALIDO)).thenReturn(Optional.of(enderecoDTO));
 
+        ApiResponseWrapper<EnderecoDTO> response = enderecoService.buscarEnderecoPorCep(CEP_VALIDO);
 
-        EnderecoDTO resultado = enderecoService.buscarEnderecoPorCep(CEP_VALIDO);
+        assertNotNull(response);
+        assertNotNull(response.getDetail());
+        assertNotNull(response.getDetail().getData());
+        assertTrue(response.getErros().isEmpty());
 
-
-        assertNotNull(resultado);
+        EnderecoDTO resultado = response.getDetail().getData();
         assertEquals(CEP_VALIDO, resultado.getCep());
         assertEquals("Praça da Sé", resultado.getLogradouro());
         assertEquals("Sé", resultado.getBairro());
@@ -68,38 +72,41 @@ class EnderecoServiceImplTest {
         String cepFormatado = "01001-000";
         when(viaCepClient.buscarEnderecoPorCep(CEP_VALIDO)).thenReturn(Optional.of(enderecoDTO));
 
-        EnderecoDTO resultado = enderecoService.buscarEnderecoPorCep(cepFormatado);
+        ApiResponseWrapper<EnderecoDTO> response = enderecoService.buscarEnderecoPorCep(cepFormatado);
 
-        assertNotNull(resultado);
+        assertNotNull(response);
+        assertNotNull(response.getDetail());
+        assertNotNull(response.getDetail().getData());
+        assertTrue(response.getErros().isEmpty());
+
+        EnderecoDTO resultado = response.getDetail().getData();
         assertEquals(CEP_VALIDO, resultado.getCep());
 
         verify(viaCepClient, times(1)).buscarEnderecoPorCep(CEP_VALIDO);
     }
 
     @Test
-    void buscarEnderecoPorCep_QuandoCepInvalido_DeveLancarExcecao() {
+    void buscarEnderecoPorCep_QuandoCepInvalido_DeveRetornarErro() {
+        ApiResponseWrapper<EnderecoDTO> response = enderecoService.buscarEnderecoPorCep(CEP_INVALIDO);
 
-        ValidationException exception = assertThrows(
-            ValidationException.class,
-            () -> enderecoService.buscarEnderecoPorCep(CEP_INVALIDO)
-        );
-
-        assertTrue(exception.getMessage().contains("CEP inválido"));
+        assertNotNull(response);
+        assertFalse(response.getErros().isEmpty());
+        assertTrue(response.getErros().get(0).contains("CEP inválido"));
+        assertNull(response.getDetail().getData());
 
         verify(viaCepClient, never()).buscarEnderecoPorCep(anyString());
     }
 
     @Test
-    void buscarEnderecoPorCep_QuandoCepNaoEncontrado_DeveLancarExcecao() {
-
+    void buscarEnderecoPorCep_QuandoCepNaoEncontrado_DeveRetornarErro() {
         when(viaCepClient.buscarEnderecoPorCep(CEP_NAO_ENCONTRADO)).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> enderecoService.buscarEnderecoPorCep(CEP_NAO_ENCONTRADO)
-        );
+        ApiResponseWrapper<EnderecoDTO> response = enderecoService.buscarEnderecoPorCep(CEP_NAO_ENCONTRADO);
 
-        assertTrue(exception.getMessage().contains(CEP_NAO_ENCONTRADO));
+        assertNotNull(response);
+        assertFalse(response.getErros().isEmpty());
+        assertTrue(response.getErros().get(0).contains(CEP_NAO_ENCONTRADO));
+        assertNull(response.getDetail().getData());
 
         verify(viaCepClient, times(1)).buscarEnderecoPorCep(CEP_NAO_ENCONTRADO);
     }

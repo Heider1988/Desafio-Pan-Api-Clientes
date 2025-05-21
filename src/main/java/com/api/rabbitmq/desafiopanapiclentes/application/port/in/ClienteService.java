@@ -3,10 +3,11 @@ package com.api.rabbitmq.desafiopanapiclentes.application.port.in;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.ClienteDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 
 public interface ClienteService {
 
-    ClienteDTO buscarClientePorCpf(String cpf);
+    ApiResponseWrapper<ClienteDTO> buscarClientePorCpf(String cpf);
 
-    ClienteDTO atualizarEnderecoCliente(String cpf, EnderecoRequestDTO enderecoRequest);
+    ApiResponseWrapper<ClienteDTO> atualizarEnderecoCliente(String cpf, EnderecoRequestDTO enderecoRequest);
 }

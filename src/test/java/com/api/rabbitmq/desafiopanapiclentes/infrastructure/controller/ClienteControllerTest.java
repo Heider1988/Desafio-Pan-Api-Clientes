@@ -6,6 +6,7 @@ import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoRequestDTO;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.GlobalExceptionHandler;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,55 +82,53 @@ class ClienteControllerTest {
     @Test
     void consultarCliente_QuandoClienteExiste_DeveRetornarCliente() throws Exception {
 
-        when(clienteService.buscarClientePorCpf(CPF)).thenReturn(clienteDTO);
+        when(clienteService.buscarClientePorCpf(CPF)).thenReturn(ApiResponseWrapper.success(clienteDTO));
 
         mockMvc.perform(get("/api/clientes/{cpf}", CPF))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cpf").value(CPF))
-                .andExpect(jsonPath("$.nome").value("João da Silva"))
-                .andExpect(jsonPath("$.email").value("joao.silva@email.com"))
-                .andExpect(jsonPath("$.telefone").value("11987654321"))
-                .andExpect(jsonPath("$.endereco.cep").value("01001000"))
-                .andExpect(jsonPath("$.endereco.cidade").value("São Paulo"));
+                .andExpect(jsonPath("$.detail.data.cpf").value(CPF))
+                .andExpect(jsonPath("$.detail.data.nome").value("João da Silva"))
+                .andExpect(jsonPath("$.detail.data.email").value("joao.silva@email.com"))
+                .andExpect(jsonPath("$.detail.data.telefone").value("11987654321"))
+                .andExpect(jsonPath("$.detail.data.endereco.cep").value("01001000"))
+                .andExpect(jsonPath("$.detail.data.endereco.cidade").value("São Paulo"));
     }
 
     @Test
     void consultarCliente_QuandoClienteNaoExiste_DeveRetornarNotFound() throws Exception {
 
-        when(clienteService.buscarClientePorCpf(CPF)).thenThrow(
-                new ResourceNotFoundException("Cliente", "CPF", CPF));
+        when(clienteService.buscarClientePorCpf(CPF))
+                .thenReturn(ApiResponseWrapper.error("Cliente", "CPF", CPF));
 
         mockMvc.perform(get("/api/clientes/{cpf}", CPF))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Cliente não encontrado com CPF: '" + CPF + "'"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.erros[0]").value("Cliente não encontrado com CPF: '" + CPF + "'"));
     }
 
     @Test
     void atualizarEnderecoCliente_QuandoClienteExiste_DeveAtualizarEndereco() throws Exception {
         when(clienteService.atualizarEnderecoCliente(eq(CPF), any(EnderecoRequestDTO.class)))
-                .thenReturn(clienteDTO);
+                .thenReturn(ApiResponseWrapper.success(clienteDTO));
 
         mockMvc.perform(put("/api/clientes/{cpf}/endereco", CPF)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(enderecoRequestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cpf").value(CPF))
-                .andExpect(jsonPath("$.nome").value("João da Silva"));
+                .andExpect(jsonPath("$.detail.data.cpf").value(CPF))
+                .andExpect(jsonPath("$.detail.data.nome").value("João da Silva"));
     }
 
     @Test
     void atualizarEnderecoCliente_QuandoClienteNaoExiste_DeveRetornarNotFound() throws Exception {
 
         when(clienteService.atualizarEnderecoCliente(eq(CPF), any(EnderecoRequestDTO.class)))
-                .thenThrow(new ResourceNotFoundException("Cliente", "CPF", CPF));
+                .thenReturn(ApiResponseWrapper.error("Cliente", "CPF", CPF));
 
         mockMvc.perform(put("/api/clientes/{cpf}/endereco", CPF)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(enderecoRequestDTO)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Cliente não encontrado com CPF: '" + CPF + "'"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.erros[0]").value("Cliente não encontrado com CPF: '" + CPF + "'"));
     }
 
     @Test
@@ -142,6 +141,7 @@ class ClienteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(enderecoInvalido)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400));
+                .andExpect(jsonPath("$.erros").isArray())
+                .andExpect(jsonPath("$.erros").isNotEmpty());
     }
 }

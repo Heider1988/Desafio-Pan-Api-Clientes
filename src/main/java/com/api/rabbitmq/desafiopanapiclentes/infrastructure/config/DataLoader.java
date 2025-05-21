@@ -23,10 +23,10 @@ public class DataLoader {
             
             // Cliente 1
             Cliente cliente1 = Cliente.builder()
-                    .cpf("11939949777")
+                    .cpf("12339949123")
                     .nome("Heider Oliveira")
                     .email("heider.o@icloud.com")
-                    .telefone("27997045408")
+                    .telefone("27900040000")
                     .endereco(Endereco.builder()
                             .cep("29070170")
                             .logradouro("Praça da Sé")

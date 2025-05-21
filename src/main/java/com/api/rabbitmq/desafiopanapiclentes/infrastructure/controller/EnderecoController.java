@@ -3,6 +3,7 @@ package com.api.rabbitmq.desafiopanapiclentes.infrastructure.controller;
 import com.api.rabbitmq.desafiopanapiclentes.application.port.in.EnderecoService;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.docs.EnderecoControllerDocs;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,11 @@ public class EnderecoController implements EnderecoControllerDocs {
     private final EnderecoService enderecoService;
 
     @GetMapping("/cep/{cep}")
-    public ResponseEntity<EnderecoDTO> consultarEnderecoPorCep(
+    public ResponseEntity<ApiResponseWrapper<EnderecoDTO>> consultarEnderecoPorCep(
             @PathVariable String cep) {
         log.info("Recebida requisição para consultar endereço com CEP: {}", cep);
 
-        EnderecoDTO endereco = enderecoService.buscarEnderecoPorCep(cep);
-        return ResponseEntity.ok(endereco);
+        ApiResponseWrapper<EnderecoDTO> response = enderecoService.buscarEnderecoPorCep(cep);
+        return ResponseEntity.ok(response);
     }
 }

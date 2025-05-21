@@ -6,6 +6,7 @@ import com.api.rabbitmq.desafiopanapiclentes.domain.model.Estado;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Municipio;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.GlobalExceptionHandler;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,11 +68,11 @@ class LocalidadeControllerTest {
 
         mockMvc.perform(get("/api/localidades/estados"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(3))
-                .andExpect(jsonPath("$[0].sigla").value("SP"))
-                .andExpect(jsonPath("$[1].sigla").value("RJ"))
-                .andExpect(jsonPath("$[2].sigla").value("MG"));
+                .andExpect(jsonPath("$.detail.data").isArray())
+                .andExpect(jsonPath("$.detail.data.length()").value(3))
+                .andExpect(jsonPath("$.detail.data[0].sigla").value("SP"))
+                .andExpect(jsonPath("$.detail.data[1].sigla").value("RJ"))
+                .andExpect(jsonPath("$.detail.data[2].sigla").value("MG"));
     }
 
     @Test
@@ -81,31 +82,30 @@ class LocalidadeControllerTest {
         // Act & Assert - Realizar a requisição e verificar o resultado
         mockMvc.perform(get("/api/localidades/estados"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(0));
+                .andExpect(jsonPath("$.detail.data").isArray())
+                .andExpect(jsonPath("$.detail.data.length()").value(0));
     }
 
     @Test
     void listarMunicipiosPorEstado_QuandoExistemMunicipios_DeveRetornarListaDeMunicipios() throws Exception {
-        when(municipioService.listarMunicipiosPorEstado(ESTADO_ID)).thenReturn(municipios);
+        when(municipioService.listarMunicipiosPorEstado(ESTADO_ID)).thenReturn(ApiResponseWrapper.success(municipios));
 
         mockMvc.perform(get("/api/localidades/estados/{estadoId}/municipios", ESTADO_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(3))
-                .andExpect(jsonPath("$[0].nome").value("São Paulo"))
-                .andExpect(jsonPath("$[1].nome").value("Santos"))
-                .andExpect(jsonPath("$[2].nome").value("Campinas"));
+                .andExpect(jsonPath("$.detail.data").isArray())
+                .andExpect(jsonPath("$.detail.data.length()").value(3))
+                .andExpect(jsonPath("$.detail.data[0].nome").value("São Paulo"))
+                .andExpect(jsonPath("$.detail.data[1].nome").value("Santos"))
+                .andExpect(jsonPath("$.detail.data[2].nome").value("Campinas"));
     }
 
     @Test
     void listarMunicipiosPorEstado_QuandoEstadoNaoExiste_DeveRetornarNotFound() throws Exception {
         when(municipioService.listarMunicipiosPorEstado(ESTADO_ID_INVALIDO))
-                .thenThrow(new ResourceNotFoundException("Municípios", "Estado ID", ESTADO_ID_INVALIDO));
+                .thenReturn(ApiResponseWrapper.error("Municípios", "Estado ID", ESTADO_ID_INVALIDO));
 
         mockMvc.perform(get("/api/localidades/estados/{estadoId}/municipios", ESTADO_ID_INVALIDO))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Municípios não encontrado com Estado ID: '" + ESTADO_ID_INVALIDO + "'"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.erros[0]").value("Municípios não encontrado com Estado ID: '" + ESTADO_ID_INVALIDO + "'"));
     }
 }

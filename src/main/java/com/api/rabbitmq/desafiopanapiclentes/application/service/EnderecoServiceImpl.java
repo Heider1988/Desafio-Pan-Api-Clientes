@@ -5,6 +5,7 @@ import com.api.rabbitmq.desafiopanapiclentes.application.port.out.ViaCepClient;
 import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ValidationException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     private final ViaCepClient viaCepClient;
 
     @Override
-    public EnderecoDTO buscarEnderecoPorCep(String cep) {
+    public ApiResponseWrapper<EnderecoDTO> buscarEnderecoPorCep(String cep) {
         log.debug("Buscando endereço pelo CEP: {}", cep);
 
         // Remove caracteres não numéricos do CEP
@@ -25,13 +26,14 @@ public class EnderecoServiceImpl implements EnderecoService {
 
         if (cepLimpo.length() != 8) {
             log.warn("CEP inválido: {}", cep);
-            throw new ValidationException("CEP inválido: deve conter 8 dígitos numéricos");
+            return ApiResponseWrapper.error("CEP inválido: deve conter 8 dígitos numéricos");
         }
 
         return viaCepClient.buscarEnderecoPorCep(cepLimpo)
-                .orElseThrow(() -> {
+                .map(ApiResponseWrapper::success)
+                .orElseGet(() -> {
                     log.error("Endereço não encontrado para o CEP: {}", cep);
-                    return new ResourceNotFoundException("Endereço", "CEP", cep);
+                    return ApiResponseWrapper.error("Endereço", "CEP", cep);
                 });
     }
 }

@@ -4,6 +4,7 @@ import com.api.rabbitmq.desafiopanapiclentes.application.port.in.MunicipioServic
 import com.api.rabbitmq.desafiopanapiclentes.application.port.out.IbgeClient;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Municipio;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,18 +20,20 @@ public class MunicipioServiceImpl implements MunicipioService {
     private final IbgeClient ibgeClient;
 
     @Override
-    public List<Municipio> listarMunicipiosPorEstado(Long estadoId) {
+    public ApiResponseWrapper<List<Municipio>> listarMunicipiosPorEstado(Long estadoId) {
         log.debug("Listando municípios do estado com ID: {}", estadoId);
 
         List<Municipio> municipios = ibgeClient.buscarMunicipiosPorEstado(estadoId);
 
         if (municipios.isEmpty()) {
             log.warn("Nenhum município encontrado para o estado com ID: {}", estadoId);
-            throw new ResourceNotFoundException("Municípios", "Estado ID", estadoId);
+            return ApiResponseWrapper.error("Municípios", "Estado ID", estadoId);
         }
 
-        return municipios.stream()
+        List<Municipio> municipiosOrdenados = municipios.stream()
                 .sorted(Comparator.comparing(Municipio::getNome))
                 .toList();
+
+        return ApiResponseWrapper.success(municipiosOrdenados);
     }
 }

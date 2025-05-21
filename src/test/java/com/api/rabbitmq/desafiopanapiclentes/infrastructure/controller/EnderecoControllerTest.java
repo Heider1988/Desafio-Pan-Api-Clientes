@@ -5,6 +5,7 @@ import com.api.rabbitmq.desafiopanapiclentes.domain.dto.EnderecoDTO;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.GlobalExceptionHandler;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ResourceNotFoundException;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ValidationException;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,36 +55,35 @@ class EnderecoControllerTest {
 
     @Test
     void consultarEnderecoPorCep_QuandoCepValido_DeveRetornarEndereco() throws Exception {
-        when(enderecoService.buscarEnderecoPorCep(CEP_VALIDO)).thenReturn(enderecoDTO);
+        when(enderecoService.buscarEnderecoPorCep(CEP_VALIDO)).thenReturn(ApiResponseWrapper.success(enderecoDTO));
 
         mockMvc.perform(get("/api/enderecos/cep/{cep}", CEP_VALIDO))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cep").value(CEP_VALIDO))
-                .andExpect(jsonPath("$.logradouro").value("Praça da Sé"))
-                .andExpect(jsonPath("$.bairro").value("Sé"))
-                .andExpect(jsonPath("$.cidade").value("São Paulo"))
-                .andExpect(jsonPath("$.estado").value("SP"));
+                .andExpect(jsonPath("$.detail.data.cep").value(CEP_VALIDO))
+                .andExpect(jsonPath("$.detail.data.logradouro").value("Praça da Sé"))
+                .andExpect(jsonPath("$.detail.data.bairro").value("Sé"))
+                .andExpect(jsonPath("$.detail.data.cidade").value("São Paulo"))
+                .andExpect(jsonPath("$.detail.data.estado").value("SP"));
     }
 
     @Test
     void consultarEnderecoPorCep_QuandoCepInvalido_DeveRetornarBadRequest() throws Exception {
+        String errorMessage = "CEP inválido: deve conter 8 dígitos numéricos";
         when(enderecoService.buscarEnderecoPorCep(CEP_INVALIDO))
-                .thenThrow(new ValidationException("CEP inválido: deve conter 8 dígitos numéricos"));
+                .thenReturn(ApiResponseWrapper.error(errorMessage));
 
         mockMvc.perform(get("/api/enderecos/cep/{cep}", CEP_INVALIDO))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").value("CEP inválido: deve conter 8 dígitos numéricos"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.erros[0]").value(errorMessage));
     }
 
     @Test
     void consultarEnderecoPorCep_QuandoCepNaoEncontrado_DeveRetornarNotFound() throws Exception {
         when(enderecoService.buscarEnderecoPorCep(CEP_NAO_ENCONTRADO))
-                .thenThrow(new ResourceNotFoundException("Endereço", "CEP", CEP_NAO_ENCONTRADO));
+                .thenReturn(ApiResponseWrapper.error("Endereço", "CEP", CEP_NAO_ENCONTRADO));
 
         mockMvc.perform(get("/api/enderecos/cep/{cep}", CEP_NAO_ENCONTRADO))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("Endereço não encontrado com CEP: '" + CEP_NAO_ENCONTRADO + "'"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.erros[0]").value("Endereço não encontrado com CEP: '" + CEP_NAO_ENCONTRADO + "'"));
     }
 }

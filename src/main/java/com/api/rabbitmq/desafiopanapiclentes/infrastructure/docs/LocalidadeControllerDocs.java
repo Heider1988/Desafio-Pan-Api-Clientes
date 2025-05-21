@@ -3,6 +3,7 @@ package com.api.rabbitmq.desafiopanapiclentes.infrastructure.docs;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Estado;
 import com.api.rabbitmq.desafiopanapiclentes.domain.model.Municipio;
 import com.api.rabbitmq.desafiopanapiclentes.infrastructure.exception.ErrorResponse;
+import com.api.rabbitmq.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -23,19 +24,19 @@ public interface LocalidadeControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de estados",
                     content = @Content(mediaType = "application/json", 
-                            array = @ArraySchema(schema = @Schema(implementation = Estado.class))))
+                            schema = @Schema(implementation = ApiResponseWrapper.class)))
     })
-    ResponseEntity<List<Estado>> listarEstados();
+    ResponseEntity<ApiResponseWrapper<List<Estado>>> listarEstados();
 
     @Operation(summary = "Listar municípios por estado", description = "Retorna a lista de municípios do estado informado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de municípios",
                     content = @Content(mediaType = "application/json", 
-                            array = @ArraySchema(schema = @Schema(implementation = Municipio.class)))),
+                            schema = @Schema(implementation = ApiResponseWrapper.class))),
             @ApiResponse(responseCode = "404", description = "Estado não encontrado", 
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
-    ResponseEntity<List<Municipio>> listarMunicipiosPorEstado(
+    ResponseEntity<ApiResponseWrapper<List<Municipio>>> listarMunicipiosPorEstado(
             @Parameter(description = "ID do estado", required = true)
             @PathVariable Long estadoId);
 }
