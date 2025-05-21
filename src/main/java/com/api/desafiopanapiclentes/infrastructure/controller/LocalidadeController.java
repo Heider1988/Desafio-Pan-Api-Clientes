@@ -29,8 +29,8 @@ public class LocalidadeController implements LocalidadeControllerDocs {
     public ResponseEntity<ApiResponseWrapper<List<Estado>>> listarEstados() {
         log.info("Recebida requisição para listar estados");
 
-        List<Estado> estados = estadoService.listarEstados();
-        return ResponseEntity.ok(ApiResponseWrapper.success(estados));
+        ApiResponseWrapper<List<Estado>> response = estadoService.listarEstados();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/estados/{estadoId}/municipios")

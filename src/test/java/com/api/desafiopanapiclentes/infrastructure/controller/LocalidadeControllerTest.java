@@ -63,7 +63,7 @@ class LocalidadeControllerTest {
 
     @Test
     void listarEstados_QuandoExistemEstados_DeveRetornarListaDeEstados() throws Exception {
-        when(estadoService.listarEstados()).thenReturn(estados);
+        when(estadoService.listarEstados()).thenReturn(ApiResponseWrapper.success(estados));
 
         mockMvc.perform(get("/api/localidades/estados"))
                 .andExpect(status().isOk())
@@ -76,7 +76,7 @@ class LocalidadeControllerTest {
 
     @Test
     void listarEstados_QuandoNaoExistemEstados_DeveRetornarListaVazia() throws Exception {
-        when(estadoService.listarEstados()).thenReturn(Arrays.asList());
+        when(estadoService.listarEstados()).thenReturn(ApiResponseWrapper.success(Arrays.asList()));
 
         // Act & Assert - Realizar a requisição e verificar o resultado
         mockMvc.perform(get("/api/localidades/estados"))

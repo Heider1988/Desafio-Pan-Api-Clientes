@@ -143,11 +143,10 @@ class ClienteControllerTest {
 
     @Test
     void atualizarEnderecoCliente_QuandoDadosInvalidos_DeveRetornarBadRequest() throws Exception {
-        // Mock the service to return an error response for invalid data
+
         when(clienteService.atualizarEnderecoCliente(eq(CPF), any(EnderecoRequestDTO.class)))
                 .thenReturn(ApiResponseWrapper.error("Dados de endereço inválidos"));
 
-        // Create a wrapper with invalid data
         RequestWrapper wrapperDTO = new RequestWrapper();
         RequestWrapper.Detail detail = new RequestWrapper.Detail();
         detail.setData(EnderecoRequestDTO.builder().build()); // Empty DTO

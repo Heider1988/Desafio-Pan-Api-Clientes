@@ -2,6 +2,7 @@ package com.api.desafiopanapiclentes.application.service;
 
 import com.api.desafiopanapiclentes.application.port.out.IbgeClient;
 import com.api.desafiopanapiclentes.domain.model.Estado;
+import com.api.desafiopanapiclentes.infrastructure.response.ApiResponseWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,8 +41,10 @@ class EstadoServiceImplTest {
     void listarEstados_QuandoExistemEstados_DeveRetornarListaOrdenada() {
         when(ibgeClient.buscarEstados()).thenReturn(estados);
 
-        List<Estado> resultado = estadoService.listarEstados();
+        ApiResponseWrapper<List<Estado>> response = estadoService.listarEstados();
+        List<Estado> resultado = response.getDetail().getData();
 
+        assertNotNull(response);
         assertNotNull(resultado);
         assertEquals(5, resultado.size());
 
@@ -60,8 +63,10 @@ class EstadoServiceImplTest {
         estados.removeIf(estado -> "SP".equals(estado.getSigla()));
         when(ibgeClient.buscarEstados()).thenReturn(estados);
 
-        List<Estado> resultado = estadoService.listarEstados();
+        ApiResponseWrapper<List<Estado>> response = estadoService.listarEstados();
+        List<Estado> resultado = response.getDetail().getData();
 
+        assertNotNull(response);
         assertNotNull(resultado);
         assertEquals(4, resultado.size());
 
@@ -78,8 +83,10 @@ class EstadoServiceImplTest {
         estados.removeIf(estado -> "RJ".equals(estado.getSigla()));
         when(ibgeClient.buscarEstados()).thenReturn(estados);
 
-        List<Estado> resultado = estadoService.listarEstados();
+        ApiResponseWrapper<List<Estado>> response = estadoService.listarEstados();
+        List<Estado> resultado = response.getDetail().getData();
 
+        assertNotNull(response);
         assertNotNull(resultado);
         assertEquals(4, resultado.size());
 
@@ -96,8 +103,10 @@ class EstadoServiceImplTest {
 
         when(ibgeClient.buscarEstados()).thenReturn(new ArrayList<>());
 
-        List<Estado> resultado = estadoService.listarEstados();
+        ApiResponseWrapper<List<Estado>> response = estadoService.listarEstados();
+        List<Estado> resultado = response.getDetail().getData();
 
+        assertNotNull(response);
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
 
