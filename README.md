@@ -1,4 +1,4 @@
-# Desafio PAN Backend - API de Clientes
+# API de Clientes
 
 Este projeto implementa uma API RESTful para gerenciamento de dados cadastrais de clientes do Banco PAN, permitindo a consulta e atualização de informações como endereço.
 
